@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // The client class
     new SolrClient({
         // The solr index url to be queried by the client
-        url: "https://cs-lab.letu.edu:50005/solr/mail_core/select",
+        url: ROOT_URL,
         searchFields: fields,
         sortFields: sortFields,
 
@@ -57,73 +57,70 @@ document.addEventListener("DOMContentLoaded", () => {
                     {...handlers}
                     bootstrapCss={true}
                     onSelectDoc={(function(doc) {
+                        console.log(doc);
+                        $.getJSON(ROOT_URL + '?indent=on&q=attachment_email_s:'+ doc.id + '&wt=json' , function (data) {
+                              //console.log(data.response.docs);
+                              var attachments = data.response.docs;
+                              const MessageModal = React.createClass({
+                                getInitialState() {
+                                  return { showModal: true};
+                                },
 
-console.log(doc);
-$.getJSON(ROOT_URL + '?indent=on&q=attachment_email_s:'+ doc.id + '&wt=json' , function (data) {
-      //console.log(data.response.docs);
-      var attachments = data.response.docs;
-      const Example = React.createClass({
-        getInitialState() {
-          return { showModal: true};
-        },
+                                close() {
+                                  this.setState({ showModal: false });
+                                },
 
-        close() {
-          this.setState({ showModal: false });
-        },
+                                open() {
+                                  this.setState({ showModal: true });
+                                },
 
-        open() {
-          this.setState({ showModal: true });
-        },
+                                render() {
+                                  const popover = (
+                                    <Popover id="modal-popover" title="popover">
+                                      very popover. such engagement
+                                    </Popover>
+                                  );
+                                  const tooltip = (
+                                    <Tooltip id="modal-tooltip">
+                                      wow.
+                                    </Tooltip>
+                                  );
 
-        render() {
-          const popover = (
-            <Popover id="modal-popover" title="popover">
-              very popover. such engagement
-            </Popover>
-          );
-          const tooltip = (
-            <Tooltip id="modal-tooltip">
-              wow.
-            </Tooltip>
-          );
+                                  return (
+                                    <div>
+                                      <Modal show={this.state.showModal} onHide={this.close}>
+                                        <Modal.Header closeButton>
 
-          return (
-            <div>
-              <Modal show={this.state.showModal} onHide={this.close}>
-                <Modal.Header closeButton>
+                                          <p>From: <strong>{doc.sender_email_address_s}</strong></p>
+                                          <p>Sent on: <strong>{doc.sent_on_dt}</strong></p>
+                                          <p>Path: <strong>{doc.path_s}</strong></p>
+                                          <p>Subject: <strong>{doc.subject_s}</strong></p>
+                                          {renderIf(attachments.length > 0)
+                                            (<div>Attachments:
+                                              {
+                                                attachments.map(function(attachment, i){
+                                                      return <a key={i} href={ROOT_ATTACHMENT_URL + doc.id + "/" + attachment.attachment_filename_s}> {attachment.attachment_filename_s}</a>;
+                                                  })
+                                                }
+                                              </div>
+                                            )
+                                            }
 
-                  <p>From: <strong>{doc.sender_email_address_s}</strong></p>
-                  <p>Sent on: <strong>{doc.sent_on_dt}</strong></p>
-                  <p>Path: <strong>{doc.path_s}</strong></p>
-                  <p>Subject: <strong>{doc.subject_s}</strong></p>
-                  {renderIf(attachments.length > 0)
-                    (<div>Attachments:
-                      {
-                        attachments.map(function(attachment, i){
-                              return <a key={i} href={ROOT_ATTACHMENT_URL + doc.id + "/" + attachment.attachment_filename_s}>{attachment.attachment_filename_s}</a>;
-                          })
-                        }
-                      </div>
-                    )
-                    }
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                          {doc.body_t}
+                                        </Modal.Body>
 
-                </Modal.Header>
-                <Modal.Body>
-                  {doc.body_t}
-                </Modal.Body>
-
-              </Modal>
-            </div>
-          );
-        }
-      });
-      ReactDOM.render(<Example />, document.getElementById('node'));
-});
-
-
-                    })}
-                />,
-                document.getElementById("app")
-            )
+                                      </Modal>
+                                    </div>
+                                  );
+                                }
+                              });
+                              ReactDOM.render(<MessageModal />, document.getElementById('node'));
+                        });
+                      })}
+                  />,
+                  document.getElementById("app")
+              )
     }).initialize(); // this will send an initial search, fetching all results from solr
 });

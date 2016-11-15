@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // The client class
   new _solrFacetedSearchReact.SolrClient({
     // The solr index url to be queried by the client
-    url: "https://cs-lab.letu.edu:50005/solr/mail_core/select",
+    url: ROOT_URL,
     searchFields: fields,
     sortFields: sortFields,
 
@@ -85,13 +85,12 @@ document.addEventListener("DOMContentLoaded", function () {
         _reactDom2.default.render(_react2.default.createElement(_solrFacetedSearchReact.SolrFacetedSearch, _extends({}, state, handlers, {
           bootstrapCss: true,
           onSelectDoc: function onSelectDoc(doc) {
-
             console.log(doc);
             _jquery2.default.getJSON(ROOT_URL + '?indent=on&q=attachment_email_s:' + doc.id + '&wt=json', function (data) {
               //console.log(data.response.docs);
               var attachments = data.response.docs;
-              var Example = _react2.default.createClass({
-                displayName: "Example",
+              var MessageModal = _react2.default.createClass({
+                displayName: "MessageModal",
                 getInitialState: function getInitialState() {
                   return { showModal: true };
                 },
@@ -170,6 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             return _react2.default.createElement(
                               "a",
                               { key: i, href: ROOT_ATTACHMENT_URL + doc.id + "/" + attachment.attachment_filename_s },
+                              " ",
                               attachment.attachment_filename_s
                             );
                           })
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   );
                 }
               });
-              _reactDom2.default.render(_react2.default.createElement(Example, null), document.getElementById('node'));
+              _reactDom2.default.render(_react2.default.createElement(MessageModal, null), document.getElementById('node'));
             });
           }
         })), document.getElementById("app"))
