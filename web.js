@@ -44046,6 +44046,10 @@ var CurrentQuery = function (_React$Component) {
 
 			var bootstrapCss = this.props.bootstrapCss;
 
+			var dateRangeValues;
+			if (searchField.type === "date-range-facet") {
+				dateRangeValues = searchField.value.split(" ");
+			}
 
 			switch (searchField.type) {
 				case "list-facet":
@@ -44064,6 +44068,23 @@ var CurrentQuery = function (_React$Component) {
 							)
 						);
 					});
+
+				case "date-range-facet":
+					return _react2.default.createElement(
+						"span",
+						{ className: (0, _classnames2.default)({ "label": bootstrapCss, "label-default": bootstrapCss }),
+							onClick: function onClick() {
+								return _this2.removeRangeFacetValue(searchField.field);
+							} },
+						dateRangeValues[0],
+						" - ",
+						dateRangeValues[1],
+						_react2.default.createElement(
+							"a",
+							null,
+							bootstrapCss ? _react2.default.createElement("span", { className: "glyphicon glyphicon-remove-sign" }) : "❌"
+						)
+					);
 
 				case "range-facet":
 					return _react2.default.createElement(
@@ -46009,10 +46030,8 @@ var SolrFacetedSearch = function (_React$Component) {
 
 						var SearchComponent = customComponents.searchFields[type];
 						var facets = getFacetValues(type, results, field, lowerBound, upperBound);
-						console.log(searchField);
 						if (searchField.label === "General Search") {
 							searchField.collapse = false;
-							console.log("HERE");
 						}
 
 						return _react2.default.createElement(SearchComponent, _extends({
