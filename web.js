@@ -44361,7 +44361,8 @@ var DateRangeSearch = function (_React$Component) {
 }(_react2.default.Component);
 
 DateRangeSearch.defaultProps = {
-	field: "date-range-facet"
+	field: "date-range-facet",
+	collapse: true
 };
 
 DateRangeSearch.propTypes = {
@@ -46008,6 +46009,11 @@ var SolrFacetedSearch = function (_React$Component) {
 
 						var SearchComponent = customComponents.searchFields[type];
 						var facets = getFacetValues(type, results, field, lowerBound, upperBound);
+						console.log(searchField);
+						if (searchField.label === "General Search") {
+							searchField.collapse = false;
+							console.log("HERE");
+						}
 
 						return _react2.default.createElement(SearchComponent, _extends({
 							key: i }, _this2.props, searchField, {
@@ -46389,7 +46395,8 @@ var TextSearch = function (_React$Component) {
 }(_react2.default.Component);
 
 TextSearch.defaultProps = {
-	field: null
+	field: null,
+	collapse: true
 };
 
 TextSearch.propTypes = {
