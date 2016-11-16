@@ -41,4 +41,3 @@ Go into the index.js and change the value of the url to that of a SolR database 
 Now, you should be able to open the index.html file in a browser window.
 
 If you have problems with things not showing up, check the developer tools of your browser (Ctrl+j for Chrome), and, if the console has an error involving CORS access, install a [plugin](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en) from the Chrome web store or [fix the server settings to allow CORS.](http://marianoguerra.org/posts/enable-cors-in-apache-solr.html)
-

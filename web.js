@@ -62,7 +62,9 @@ var ROOT_ATTACHMENT_URL = " http://cs-lab.letu.edu/~hazenjohnson/solr/";
 // The search fields and filterable facets you want
 var fields = [{ label: "General Search", field: "*", type: "text" },
 //{label: "Advanced Entry (field:value,...)", field: "*", type: "currentQuery"},
-{ label: "Sender Email Address", field: "sender_email_address_s", type: "text" }, { label: "Sender Name", field: "sender_name_s", type: "list-facet" }, { label: "Subject", field: "subject_s", type: "text" },
+{ label: "Sender Email Address", field: "sender_email_address_s", type: "text" },
+//{label: "Sender Name", 	field: "sender_name_s", type: "list-facet"},
+{ label: "Subject", field: "subject_s", type: "text" },
 //Note, this path field has slashes escaped
 { label: "Path", field: "path_s", type: "text" }, { label: "Sent on", field: "sent_on_dt", type: "date-range-facet" }];
 
@@ -44243,9 +44245,6 @@ var DateRangeSearch = function (_React$Component) {
 	}, {
 		key: "buildQuery",
 		value: function buildQuery(startDate, endDate) {
-			console.log("DATES");
-			console.log(startDate);
-			console.log(endDate);
 			var startVal = startDate !== undefined && startDate !== null ? moment.utc(startDate).toISOString() : "*";
 			var endVal = endDate !== undefined && endDate !== null ? moment.utc(endDate).toISOString() : "NOW";
 			var queryString = startVal + " " + endVal;
@@ -44257,18 +44256,28 @@ var DateRangeSearch = function (_React$Component) {
 	}, {
 		key: "onStartRangeChange",
 		value: function onStartRangeChange(value) {
-			if (!this.isValidDateString(value)) return;
-			this.setState({
-				startDate: value
-			});
+			if (!this.isValidDateString(value)) {
+				this.setState({
+					startDate: null
+				});
+			} else {
+				this.setState({
+					startDate: value
+				});
+			}
 		}
 	}, {
 		key: "onEndRangeChange",
 		value: function onEndRangeChange(value) {
-			if (!this.isValidDateString(value)) return;
-			this.setState({
-				endDate: value
-			});
+			if (!this.isValidDateString(value)) {
+				this.setState({
+					endDate: null
+				});
+			} else {
+				this.setState({
+					endDate: value
+				});
+			}
 		}
 	}, {
 		key: "componentWillReceiveProps",
