@@ -43576,7 +43576,7 @@ var SolrClient = function () {
 			var pageStrategy = query.pageStrategy;
 
 			var payload = _extends({ type: "SET_QUERY_FIELDS"
-			}, this.settings, { start: pageStrategy === "paginate" ? 0 : null
+			}, this.settings, { pageStrategy: "paginate", rows: 20, start: pageStrategy === "paginate" ? 0 : null
 			});
 			this.sendQuery((0, _query2.default)(this.state.query, payload));
 		}
@@ -43644,6 +43644,7 @@ var SolrClient = function () {
 				return searchField.field === field ? _extends({}, searchField, { value: value }) : searchField;
 			});
 
+			//console.log(newFields.searchFields[4]);
 			var payload = { type: "SET_SEARCH_FIELDS", newFields: newFields };
 
 			this.sendQuery((0, _query2.default)(this.state.query, payload));
@@ -43858,6 +43859,7 @@ var solrQuery = function solrQuery(query) {
 	});
 	var queryParams = buildQuery(searchFields.concat(filters));
 
+	console.log(searchFields);
 	var facetFieldParam = facetFields(searchFields);
 	var facetSortParams = facetSorts(searchFields);
 	var facetLimitParam = "facet.limit=" + (facetLimit || -1);
@@ -43869,9 +43871,7 @@ var solrQuery = function solrQuery(query) {
 
 	var sortParam = buildSort(sortFields.concat(idSort));
 
-	console.log(pathQuery);
-
-	return "q=*:*" + encodeURIComponent(addAttachment) + ("&" + (queryParams.length > 0 ? queryParams : "")) + ("" + (sortParam.length > 0 ? "&sort=" + sortParam : "")) + ("" + (facetFieldParam.length > 0 ? "&" + facetFieldParam : "")) + ("" + (facetSortParams.length > 0 ? "&" + facetSortParams : "")) + ("" + (pathQuery !== "" ? "&facet.field=path_s&fq=" + pathQuery : "facet.field=path_s")) + ("&rows=" + rows) + ("&" + facetLimitParam) + ("&" + facetSortParam) + ("&" + cursorMarkParam) + (start === null ? "" : "&start=" + start) + "&facet=on" + ("&" + buildFormat(format));
+	return "q=*:*" + encodeURIComponent(addAttachment) + ("&" + (queryParams.length > 0 ? queryParams : "")) + ("" + (sortParam.length > 0 ? "&sort=" + sortParam : "")) + ("" + (facetFieldParam.length > 0 ? "&" + facetFieldParam : "")) + ("" + (facetSortParams.length > 0 ? "&" + facetSortParams : "")) + ("" + (pathQuery !== "" ? "&facet.field=path_s&fq=" + pathQuery : "")) + ("&rows=" + rows) + ("&" + facetLimitParam) + ("&" + facetSortParam) + ("&" + cursorMarkParam) + (start === null ? "" : "&start=" + start) + "&facet=on" + ("&" + buildFormat(format));
 };
 
 exports.default = solrQuery;
@@ -44360,14 +44360,14 @@ var DateRangeSearch = function (_React$Component) {
 				_react2.default.createElement(
 					"div",
 					{ style: { display: collapse ? "none" : "block" } },
-					_react2.default.createElement(Datetime, { id: "datetime1", onChange: this.onStartRangeChange, closeOnSelect: true }),
+					_react2.default.createElement(Datetime, { id: "datetime1", defaultValue: "*", onChange: this.onStartRangeChange, closeOnSelect: true }),
 					_react2.default.createElement(
 						"button",
 						{ className: (0, _classnames2.default)({ "btn": bootstrapCss, "btn-default": bootstrapCss, "btn-sm": bootstrapCss }), onClick: this.handleSubmit.bind(this) },
 						_react2.default.createElement(_search2.default, null)
 					),
 					_react2.default.createElement("br", null),
-					_react2.default.createElement(Datetime, { id: "datetime2", onChange: this.onEndRangeChange, closeOnSelect: true }),
+					_react2.default.createElement(Datetime, { id: "datetime2", defaultValue: "NOW", onChange: this.onEndRangeChange, closeOnSelect: true }),
 					_react2.default.createElement(
 						"button",
 						{ className: (0, _classnames2.default)({ "btn": bootstrapCss, "btn-default": bootstrapCss, "btn-sm": bootstrapCss }), onClick: this.handleSubmit.bind(this) },
@@ -45903,6 +45903,12 @@ var SearchFieldContainer = function (_React$Component) {
 							"label",
 							null,
 							"Search"
+						),
+						_react2.default.createElement(
+							"button",
+							{ className: (0, _classnames2.default)({ "btn": bootstrapCss, "btn-default": bootstrapCss, "btn-xs": bootstrapCss, "pull-right": bootstrapCss }),
+								onClick: onNewSearch },
+							"New search"
 						)
 					),
 					_react2.default.createElement(
@@ -45917,11 +45923,6 @@ var SearchFieldContainer = function (_React$Component) {
 
 	return SearchFieldContainer;
 }(_react2.default.Component);
-/*<button className={cx({"btn": bootstrapCss, "btn-default": bootstrapCss, "btn-xs": bootstrapCss, "pull-right": bootstrapCss})}
-	onClick={onNewSearch}>
-	New search
-</button>
-*/
 
 SearchFieldContainer.propTypes = {
 	bootstrapCss: _react2.default.PropTypes.bool,
@@ -46467,6 +46468,7 @@ exports.default = function () {
 	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	var action = arguments[1];
 
+	console.log(action.type);
 	switch (action.type) {
 		case "SET_QUERY_FIELDS":
 			return setQueryFields(state, action);
@@ -46495,6 +46497,9 @@ var initialState = {
 };
 
 var setQueryFields = function setQueryFields(state, action) {
+	console.log("Setting query fields...");
+	console.log(state);
+	console.log(action);
 	return _extends({}, state, {
 		searchFields: action.searchFields,
 		sortFields: action.sortFields,
