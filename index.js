@@ -23,9 +23,8 @@ const ROOT_ATTACHMENT_URL = " http://cs-lab.letu.edu/~hazenjohnson/solr/";
 // The search fields and filterable facets you want
 const fields = [
     {label: "General Search", 		field: "*", type: "text"},
-    //{label: "Advanced Entry (field:value,...)", field: "*", type: "currentQuery"},
     {label: "Sender Email Address", 	field: "sender_email_address_s", type: "text"},
-    //{label: "Sender Name", 	field: "sender_name_s", type: "list-facet"},
+    {label: "Sender Name", 	field: "sender_name_s", type: "list-facet"},
     {label: "Subject", 			field: "subject_s", 	type: "text"},
     //Note, this path field has slashes escaped
     {label: "Path", 			field: "path_s", 	type: "text"},
@@ -35,8 +34,8 @@ const fields = [
 // The sortable fields you want
 const sortFields = [
     {label: "Sender Email", field: "sender_email_address_s"},
-    {label: "Sent on", field: "sent_on_dt"},
-    {label: "Path", field: "path_s"}
+    {label: "Path", field: "path_s"},
+    {label: "Sent on", field: "sent_on_dt"}
   ];
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -60,16 +60,12 @@ var ROOT_URL = "https://cs-lab.letu.edu:50005/solr/mail_core/select";
 var ROOT_ATTACHMENT_URL = " http://cs-lab.letu.edu/~hazenjohnson/solr/";
 
 // The search fields and filterable facets you want
-var fields = [{ label: "General Search", field: "*", type: "text" },
-//{label: "Advanced Entry (field:value,...)", field: "*", type: "currentQuery"},
-{ label: "Sender Email Address", field: "sender_email_address_s", type: "text" },
-//{label: "Sender Name", 	field: "sender_name_s", type: "list-facet"},
-{ label: "Subject", field: "subject_s", type: "text" },
+var fields = [{ label: "General Search", field: "*", type: "text" }, { label: "Sender Email Address", field: "sender_email_address_s", type: "text" }, { label: "Sender Name", field: "sender_name_s", type: "list-facet" }, { label: "Subject", field: "subject_s", type: "text" },
 //Note, this path field has slashes escaped
 { label: "Path", field: "path_s", type: "text" }, { label: "Sent on", field: "sent_on_dt", type: "date-range-facet" }];
 
 // The sortable fields you want
-var sortFields = [{ label: "Sender Email", field: "sender_email_address_s" }, { label: "Sent on", field: "sent_on_dt" }, { label: "Path", field: "path_s" }];
+var sortFields = [{ label: "Sender Email", field: "sender_email_address_s" }, { label: "Path", field: "path_s" }, { label: "Sent on", field: "sent_on_dt" }];
 
 document.addEventListener("DOMContentLoaded", function () {
   // The client class
@@ -43868,7 +43864,9 @@ var solrQuery = function solrQuery(query) {
 
 	var sortParam = buildSort(sortFields.concat(idSort));
 
-	return "q=*:*" + encodeURIComponent(addAttachment) + ("&" + (queryParams.length > 0 ? queryParams : "")) + ("" + (sortParam.length > 0 ? "&sort=" + sortParam : "")) + ("" + (facetFieldParam.length > 0 ? "&" + facetFieldParam : "")) + ("" + (facetSortParams.length > 0 ? "&" + facetSortParams : "")) + ("" + (pathQuery !== "" ? "&facet.field=path_s&fq=" + pathQuery : "")) + ("&rows=" + rows) + ("&" + facetLimitParam) + ("&" + facetSortParam) + ("&" + cursorMarkParam) + (start === null ? "" : "&start=" + start) + "&facet=on" + ("&" + buildFormat(format));
+	var defaultSortParam = encodeURIComponent("sent_on_dt desc");
+
+	return "q=*:*" + encodeURIComponent(addAttachment) + ("&" + (queryParams.length > 0 ? queryParams : "")) + ("" + (sortParam.length > 0 && sortParam !== defaultSortParam ? "&sort=" + sortParam + ", " + defaultSortParam + " " : "&sort=" + defaultSortParam)) + ("" + (facetFieldParam.length > 0 ? "&" + facetFieldParam : "")) + ("" + (facetSortParams.length > 0 ? "&" + facetSortParams : "")) + ("" + (pathQuery !== "" ? "&facet.field=path_s&fq=" + pathQuery : "")) + ("&rows=" + rows) + ("&" + facetLimitParam) + ("&" + facetSortParam) + ("&" + cursorMarkParam) + (start === null ? "" : "&start=" + start) + "&facet=on" + ("&" + buildFormat(format));
 };
 
 exports.default = solrQuery;
@@ -44269,7 +44267,6 @@ var DateRangeSearch = function (_React$Component) {
 		value: function clearComponent() {
 			var _this2 = this;
 
-			console.log("CLEAR");
 			this.setState({
 				startDate: null,
 				endDate: null,
@@ -44314,17 +44311,14 @@ var DateRangeSearch = function (_React$Component) {
 	}, {
 		key: "buildQuery",
 		value: function buildQuery() {
-			console.log("QDATES");
 			var invalidStart = false;
 			var invalidEnd = false;
 			if (this.state.startDate !== null && this.state.startDate._isValid !== true) {
-				console.log("clearStart");
 				this.clearStartComponent();
 				invalidStart = true;
 			}
 
 			if (this.state.endDate !== null && this.state.endDate._isValid !== true) {
-				console.log("clearEnd");
 				invalidEnd = true;
 				this.clearEndComponent();
 			}
@@ -44355,7 +44349,6 @@ var DateRangeSearch = function (_React$Component) {
 		key: "componentWillReceiveProps",
 		value: function componentWillReceiveProps(nextProps) {
 			if (nextProps.value === undefined) {
-				console.log("RESET");
 				this.clearComponent();
 				this.setState({
 					value: this.props.defaultValue
