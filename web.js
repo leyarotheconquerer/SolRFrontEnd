@@ -42383,7 +42383,6 @@ var Datetime = React.createClass({
 			.minutes( currentDate.minutes() )
 			.seconds( currentDate.seconds() )
 			.milliseconds( currentDate.milliseconds() );
-
 		if ( !this.props.value ){
 			this.setState({
 				selectedDate: date,
@@ -43644,7 +43643,6 @@ var SolrClient = function () {
 				return searchField.field === field ? _extends({}, searchField, { value: value }) : searchField;
 			});
 
-			//console.log(newFields.searchFields[4]);
 			var payload = { type: "SET_SEARCH_FIELDS", newFields: newFields };
 
 			this.sendQuery((0, _query2.default)(this.state.query, payload));
@@ -43859,7 +43857,6 @@ var solrQuery = function solrQuery(query) {
 	});
 	var queryParams = buildQuery(searchFields.concat(filters));
 
-	console.log(searchFields);
 	var facetFieldParam = facetFields(searchFields);
 	var facetSortParams = facetSorts(searchFields);
 	var facetLimitParam = "facet.limit=" + (facetLimit || -1);
@@ -44248,9 +44245,16 @@ var DateRangeSearch = function (_React$Component) {
 		_this.state = {
 			startDate: null,
 			endDate: null,
+			datetime1: function datetime1() {
+				return _react2.default.createElement(Datetime, { defaultValue: "*", onChange: _this.onStartRangeChange.bind(_this), closeOnSelect: true });
+			},
+			datetime2: function datetime2() {
+				return _react2.default.createElement(Datetime, { defaultValue: "NOW", onChange: _this.onEndRangeChange, closeOnSelect: true });
+			},
 			value: ""
 		};
-		_this.onStartRangeChange = _this.onStartRangeChange.bind(_this);
+		;
+		_this.clearComponent = _this.clearComponent.bind(_this);
 		_this.onEndRangeChange = _this.onEndRangeChange.bind(_this);
 		_this.buildQuery = _this.buildQuery.bind(_this);
 		_this.isValidDateString = _this.isValidDateString.bind(_this);
@@ -44259,6 +44263,20 @@ var DateRangeSearch = function (_React$Component) {
 	}
 
 	_createClass(DateRangeSearch, [{
+		key: "clearComponent",
+		value: function clearComponent() {
+			var _this2 = this;
+
+			this.setState({
+				datetime1: function datetime1() {
+					return _react2.default.createElement(Datetime, { defaultValue: "*", onChange: _this2.onStartRangeChange.bind(_this2), closeOnSelect: true });
+				},
+				datetime2: function datetime2() {
+					return _react2.default.createElement(Datetime, { defaultValue: "NOW", onChange: _this2.onEndRangeChange, closeOnSelect: true });
+				}
+			});
+		}
+	}, {
 		key: "isValidDateString",
 		value: function isValidDateString(value) {
 			return !isNaN(Date.parse(value));
@@ -44303,6 +44321,12 @@ var DateRangeSearch = function (_React$Component) {
 	}, {
 		key: "componentWillReceiveProps",
 		value: function componentWillReceiveProps(nextProps) {
+			if (nextProps.value === undefined) {
+				this.clearComponent();
+				this.setState({
+					value: this.props.defaultValue
+				});
+			}
 			this.setState({
 				value: nextProps.value
 			});
@@ -44319,7 +44343,6 @@ var DateRangeSearch = function (_React$Component) {
 		key: "handleSubmit",
 		value: function handleSubmit() {
 			var queryString = this.buildQuery(this.state.startDate, this.state.endDate);
-			console.log(this);
 			this.props.onChange(this.props.field, queryString);
 		}
 	}, {
@@ -44330,6 +44353,8 @@ var DateRangeSearch = function (_React$Component) {
 	}, {
 		key: "render",
 		value: function render() {
+			var Date1 = this.state.datetime1;
+			var Date2 = this.state.datetime2;
 			var _props = this.props,
 			    label = _props.label,
 			    bootstrapCss = _props.bootstrapCss,
@@ -44360,14 +44385,14 @@ var DateRangeSearch = function (_React$Component) {
 				_react2.default.createElement(
 					"div",
 					{ style: { display: collapse ? "none" : "block" } },
-					_react2.default.createElement(Datetime, { id: "datetime1", defaultValue: "*", onChange: this.onStartRangeChange, closeOnSelect: true }),
+					_react2.default.createElement(Date1, null),
 					_react2.default.createElement(
 						"button",
 						{ className: (0, _classnames2.default)({ "btn": bootstrapCss, "btn-default": bootstrapCss, "btn-sm": bootstrapCss }), onClick: this.handleSubmit.bind(this) },
 						_react2.default.createElement(_search2.default, null)
 					),
 					_react2.default.createElement("br", null),
-					_react2.default.createElement(Datetime, { id: "datetime2", defaultValue: "NOW", onChange: this.onEndRangeChange, closeOnSelect: true }),
+					_react2.default.createElement(Date2, null),
 					_react2.default.createElement(
 						"button",
 						{ className: (0, _classnames2.default)({ "btn": bootstrapCss, "btn-default": bootstrapCss, "btn-sm": bootstrapCss }), onClick: this.handleSubmit.bind(this) },
@@ -46468,7 +46493,6 @@ exports.default = function () {
 	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	var action = arguments[1];
 
-	console.log(action.type);
 	switch (action.type) {
 		case "SET_QUERY_FIELDS":
 			return setQueryFields(state, action);
@@ -46497,9 +46521,6 @@ var initialState = {
 };
 
 var setQueryFields = function setQueryFields(state, action) {
-	console.log("Setting query fields...");
-	console.log(state);
-	console.log(action);
 	return _extends({}, state, {
 		searchFields: action.searchFields,
 		sortFields: action.sortFields,
