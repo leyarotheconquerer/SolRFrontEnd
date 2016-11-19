@@ -32,10 +32,10 @@ const fields = [
 ];
 
 // The sortable fields you want
-const sortFields = [
-    {label: "Sender Email", field: "sender_email_address_s"},
-    {label: "Path", field: "path_s"},
-    {label: "Sent on", field: "sent_on_dt"}
+var sortFields = [
+    {label: "Sender Email", field: "sender_email_address_s", priority: 100},
+    {label: "Path", field: "path_s", priority: 100},
+    {label: "Sent on", field: "sent_on_dt", priority: 100}
   ];
 
 document.addEventListener("DOMContentLoaded", () => {

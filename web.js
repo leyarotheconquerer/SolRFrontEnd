@@ -65,7 +65,7 @@ var fields = [{ label: "General Search", field: "*", type: "text" }, { label: "S
 { label: "Path", field: "path_s", type: "text" }, { label: "Sent on", field: "sent_on_dt", type: "date-range-facet" }];
 
 // The sortable fields you want
-var sortFields = [{ label: "Sender Email", field: "sender_email_address_s" }, { label: "Path", field: "path_s" }, { label: "Sent on", field: "sent_on_dt" }];
+var sortFields = [{ label: "Sender Email", field: "sender_email_address_s", priority: 100 }, { label: "Path", field: "path_s", priority: 100 }, { label: "Sent on", field: "sent_on_dt", priority: 100 }];
 
 document.addEventListener("DOMContentLoaded", function () {
   // The client class
@@ -43659,16 +43659,60 @@ var SolrClient = function () {
 		}
 	}, {
 		key: "setSortFieldValue",
-		value: function setSortFieldValue(field, value) {
+		value: function setSortFieldValue(field, value, priority) {
 			var query = this.state.query;
 			var sortFields = query.sortFields;
 
+			//create new sort fields
+			//TO ADD--ADD CASE IF PRIORITY EQUAL AND FIELD EQUAL, BUT DIFF VALUE
+			//TO ADD--MAKE IT SO THAT LIST SORTED ON PRIORITY
+
 			var newSortFields = sortFields.map(function (sortField) {
-				return sortField.field === field ? _extends({}, sortField, { value: value }) : _extends({}, sortField, { value: null });
+				if (priority === 100 || sortField.priority === 100) {
+					if (field === sortField.field) {
+						return _extends({}, sortField, { value: value, priority: priority });
+					}
+				} else if (priority === sortField.priority) {
+					if (field === sortField.field) {
+						return _extends({}, sortField, { value: value, priority: priority });
+					} else {
+						return _extends({}, sortField, { value: null, priority: 100 });
+					}
+				}
+				return _extends({}, sortField);
 			});
+
+			newSortFields.sort(function (a, b) {
+				return a.priority - b.priority;
+			});
+
+			var selected = newSortFields.length;
+			for (var i = 0; i < newSortFields.length; i++) {
+				if (newSortFields[i].priority === 100) {
+					selected = i;
+					break;
+				} else {
+					newSortFields[i].priority = i + 1;
+				}
+			}
+
+			console.log(selected);
+			console.log(newSortFields.length);
+			if (selected == newSortFields.length) {
+				console.log("IN LOOP");
+				for (var i = 0; i < newSortFields.length; i++) {
+					newSortFields[i].priority--;
+				}
+			}
+
+			//so we have sort fields
+			//actual selected
+			console.log("ACTUAL SELECTED");
+			console.log(newSortFields);
 
 			var payload = { type: "SET_SORT_FIELDS", newSortFields: newSortFields };
 			this.sendQuery((0, _query2.default)(this.state.query, payload));
+			return newSortFields;
 		}
 	}, {
 		key: "setFilters",
@@ -43848,13 +43892,14 @@ var solrQuery = function solrQuery(query) {
 	    idField = query.idField;
 
 
+	console.log(query);
 	var filters = (query.filters || []).map(function (filter) {
 		return _extends({}, filter, { type: filter.type || "text" });
 	});
 	var queryParams = buildQuery(searchFields.concat(filters));
 
 	var facetFieldParam = facetFields(searchFields);
-	var facetSortParams = facetSorts(searchFields);
+	var facetSortParams = facetSorts(sortFields);
 	var facetLimitParam = "facet.limit=" + (facetLimit || -1);
 	var facetSortParam = "facet.sort=" + (facetSort || "index");
 	var addAttachment = noAttachments ? " AND subject_s:*" : "";
@@ -43862,7 +43907,13 @@ var solrQuery = function solrQuery(query) {
 	var cursorMarkParam = pageStrategy === "cursor" ? "cursorMark=" + encodeURIComponent(cursorMark || "*") : "";
 	var idSort = pageStrategy === "cursor" ? [{ field: idField, value: "asc" }] : [];
 
-	var sortParam = buildSort(sortFields.concat(idSort));
+	var tempSortFields = sortFields.slice();
+	tempSortFields.reverse();
+
+	var sortParam = buildSort(tempSortFields.concat(idSort));
+
+	console.log("SORT PARAMS");
+	console.log(sortParam);
 
 	var defaultSortParam = encodeURIComponent("sent_on_dt desc");
 
@@ -46004,6 +46055,10 @@ var _classnames = _dereq_("classnames");
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
+var _search = _dereq_("./icons/search");
+
+var _search2 = _interopRequireDefault(_search);
+
 var _componentPack = _dereq_("./component-pack");
 
 var _componentPack2 = _interopRequireDefault(_componentPack);
@@ -46023,13 +46078,61 @@ var getFacetValues = function getFacetValues(type, results, field, lowerBound, u
 var SolrFacetedSearch = function (_React$Component) {
 	_inherits(SolrFacetedSearch, _React$Component);
 
-	function SolrFacetedSearch() {
+	function SolrFacetedSearch(props) {
 		_classCallCheck(this, SolrFacetedSearch);
 
-		return _possibleConstructorReturn(this, (SolrFacetedSearch.__proto__ || Object.getPrototypeOf(SolrFacetedSearch)).apply(this, arguments));
+		var _this = _possibleConstructorReturn(this, (SolrFacetedSearch.__proto__ || Object.getPrototypeOf(SolrFacetedSearch)).call(this, props));
+
+		_this.state = {
+			sortBaseComponents: [0],
+			max_selected: 0,
+			last_num_selected: 0
+		};
+
+		_this.checkOnChange = _this.checkOnChange.bind(_this);
+		return _this;
 	}
 
 	_createClass(SolrFacetedSearch, [{
+		key: "checkOnChange",
+		value: function checkOnChange(field, value, priority) {
+			var newFields = this.props.onSortFieldChange(field, value, priority);
+			//assumes if priority is < 100 and
+			console.log("SORT FIELD");
+			var selected = 0;
+			for (var i = 0; i < newFields.length; i++) {
+				if (newFields[i].priority < 100) {
+					selected++;
+				}
+			}
+			console.log("SELECTED");
+			console.log(selected);
+
+			this.addSortComponent(field, selected, newFields);
+		}
+	}, {
+		key: "addSortComponent",
+		value: function addSortComponent(field, selected, newFields) {
+			if (this.state.sortBaseComponents.length < selected + 1 && this.state.sortBaseComponents.length < this.props.query.sortFields.length) //&& this.state.sortBaseComponents.length == this.state.max_selected)
+				{
+					var newArray = this.state.sortBaseComponents;
+					newArray.push(this.state.sortBaseComponents[this.state.sortBaseComponents.length - 1] + 1);
+					this.setState({
+						sortBaseComponents: newArray
+					});
+				} else if (this.state.sortBaseComponents.length > selected + 1) {
+				var newArray = this.state.sortBaseComponents;
+				newArray.pop();
+				this.setState({ sortBaseComponents: newArray });
+			}
+			this.render();
+		}
+	}, {
+		key: "valueIsValid",
+		value: function valueIsValid(sortField) {
+			return sortField.value !== undefined && sortField.value !== null;
+		}
+	}, {
 		key: "render",
 		value: function render() {
 			var _this2 = this;
@@ -46069,6 +46172,11 @@ var SolrFacetedSearch = function (_React$Component) {
 			var pagination = query.pageStrategy === "paginate" ? _react2.default.createElement(PaginateComponent, _extends({}, this.props, { bootstrapCss: bootstrapCss, onChange: onPageChange })) : null;
 
 			var preloadListItem = query.pageStrategy === "cursor" && results.docs.length < results.numFound ? _react2.default.createElement(PreloadComponent, this.props) : null;
+			var me = this;
+
+			console.log("RENDERING..." + me.state.max_selected);
+			console.log(this.state.sortBaseComponents);
+			var reversedBase = this.state.sortBaseComponents.slice();
 
 			return _react2.default.createElement(
 				"div",
@@ -46104,7 +46212,9 @@ var SolrFacetedSearch = function (_React$Component) {
 						{ bootstrapCss: bootstrapCss },
 						_react2.default.createElement(ResultCount, { bootstrapCss: bootstrapCss, numFound: results.numFound }),
 						resultPending,
-						_react2.default.createElement(SortComponent, { bootstrapCss: bootstrapCss, onChange: onSortFieldChange, sortFields: sortFields }),
+						reversedBase.map(function (sortBaseIndex, index) {
+							return _react2.default.createElement(SortComponent, { keyIndex: sortBaseIndex, key: index, bootstrapCss: bootstrapCss, onChange: me.checkOnChange, sortFields: sortFields });
+						}),
 						this.props.showCsvExport ? _react2.default.createElement(CsvExportComponent, { bootstrapCss: bootstrapCss, onClick: onCsvExport }) : null
 					),
 					_react2.default.createElement(CurrentQueryComponent, _extends({}, this.props, { onChange: onSearchFieldChange })),
@@ -46162,7 +46272,7 @@ SolrFacetedSearch.propTypes = {
 
 exports.default = SolrFacetedSearch;
 
-},{"./component-pack":20,"classnames":1,"react":"react"}],40:[function(_dereq_,module,exports){
+},{"./component-pack":20,"./icons/search":24,"classnames":1,"react":"react"}],40:[function(_dereq_,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46202,6 +46312,7 @@ var SortMenu = function (_React$Component) {
 		_this.state = {
 			isOpen: false
 		};
+
 		_this.documentClickListener = _this.handleDocumentClick.bind(_this);
 		return _this;
 	}
@@ -46228,12 +46339,24 @@ var SortMenu = function (_React$Component) {
 	}, {
 		key: "onSelect",
 		value: function onSelect(sortField) {
-			var foundIdx = this.props.sortFields.indexOf(sortField);
-			if (foundIdx < 0) {
-				this.props.onChange(sortField, "asc");
-			} else {
-				this.props.onChange(sortField, null);
+			var foundIdx = -1;
+
+			for (var i = 0; i < this.props.sortFields.length; i++) {
+				if (this.props.sortFields[i].field === sortField) {
+					foundIdx = i;
+				}
 			}
+
+			if (foundIdx >= 0) {
+				this.props.onChange(sortField, "asc", this.props.keyIndex);
+			} else {
+				this.props.onChange(sortField, null, 100);
+			}
+		}
+	}, {
+		key: "onDelete",
+		value: function onDelete(sortField) {
+			this.props.onChange(sortField, null, 100);
 		}
 	}, {
 		key: "handleDocumentClick",
@@ -46259,10 +46382,19 @@ var SortMenu = function (_React$Component) {
 				return null;
 			}
 
-			var value = sortFields.find(function (sf) {
-				return sf.value;
-			});
+			//get current location
+			var foundIdx = -1;
+			for (var i = 0; i < sortFields.length; i++) {
+				if (sortFields[i].priority === this.props.keyIndex) {
+					foundIdx = i;
+					break;
+				}
+			}
 
+			var value = null;
+			if (foundIdx >= 0) {
+				value = sortFields[foundIdx];
+			}
 			return _react2.default.createElement(
 				"span",
 				{ className: (0, _classnames2.default)({ "pull-right": bootstrapCss }) },
@@ -46299,7 +46431,7 @@ var SortMenu = function (_React$Component) {
 							_react2.default.createElement(
 								"a",
 								{ onClick: function onClick() {
-										_this2.props.onChange(value.field, null);_this2.toggleSelect();
+										_this2.onDelete(value.field);_this2.toggleSelect();
 									} },
 								"- clear -"
 							)
@@ -46313,7 +46445,7 @@ var SortMenu = function (_React$Component) {
 						"button",
 						{ className: (0, _classnames2.default)({ "btn": bootstrapCss, "btn-default": bootstrapCss, "btn-xs": bootstrapCss, active: value.value === "asc" }),
 							onClick: function onClick() {
-								return _this2.props.onChange(value.field, "asc");
+								return _this2.props.onChange(value.field, "asc", _this2.props.keyIndex);
 							} },
 						"asc"
 					),
@@ -46321,7 +46453,7 @@ var SortMenu = function (_React$Component) {
 						"button",
 						{ className: (0, _classnames2.default)({ "btn": bootstrapCss, "btn-default": bootstrapCss, "btn-xs": bootstrapCss, active: value.value === "desc" }),
 							onClick: function onClick() {
-								return _this2.props.onChange(value.field, "desc");
+								return _this2.props.onChange(value.field, "desc", _this2.props.keyIndex);
 							} },
 						"desc"
 					)
@@ -46336,7 +46468,8 @@ var SortMenu = function (_React$Component) {
 SortMenu.propTypes = {
 	bootstrapCss: _react2.default.PropTypes.bool,
 	onChange: _react2.default.PropTypes.func,
-	sortFields: _react2.default.PropTypes.array
+	sortFields: _react2.default.PropTypes.array,
+	sortKey: _react2.default.PropTypes.number
 };
 
 exports.default = SortMenu;
