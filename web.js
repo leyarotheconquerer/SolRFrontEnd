@@ -65,7 +65,7 @@ var fields = [{ label: "General Search", field: "*", type: "text" }, { label: "S
 { label: "Path", field: "path_s", type: "text" }, { label: "Sent on", field: "sent_on_dt", type: "date-range-facet" }];
 
 // The sortable fields you want
-var sortFields = [{ label: "Sender Email", field: "sender_email_address_s", priority: 100 }, { label: "Path", field: "path_s", priority: 100 }, { label: "Sent on", field: "sent_on_dt", priority: 100 }];
+var sortFields = [{ label: "Sender Email", field: "sender_email_address_s" }, { label: "Path", field: "path_s" }, { label: "Sent on", field: "sent_on_dt" }];
 
 document.addEventListener("DOMContentLoaded", function () {
   // The client class
@@ -85,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
           onSelectDoc: function onSelectDoc(doc) {
             console.log(doc);
             _jquery2.default.getJSON(ROOT_URL + '?indent=on&q=attachment_email_s:' + doc.id + '&wt=json', function (data) {
-              //console.log(data.response.docs);
               var attachments = data.response.docs;
               var MessageModal = _react2.default.createClass({
                 displayName: "MessageModal",
@@ -43491,6 +43490,8 @@ var _server = _dereq_("./server");
 
 var _server2 = _interopRequireDefault(_server);
 
+var _index = _dereq_("../components/sort-menu/index");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -43663,20 +43664,19 @@ var SolrClient = function () {
 			var query = this.state.query;
 			var sortFields = query.sortFields;
 
-			//create new sort fields
-			//TO ADD--ADD CASE IF PRIORITY EQUAL AND FIELD EQUAL, BUT DIFF VALUE
-			//TO ADD--MAKE IT SO THAT LIST SORTED ON PRIORITY
 
 			var newSortFields = sortFields.map(function (sortField) {
-				if (priority === 100 || sortField.priority === 100) {
+				if (priority === _index.SORT_MENU_MAX || sortField.priority === undefined || sortField.priority === _index.SORT_MENU_MAX) {
 					if (field === sortField.field) {
 						return _extends({}, sortField, { value: value, priority: priority });
+					} else if (sortField.priority === undefined) {
+						return _extends({}, sortField, { value: null, priority: _index.SORT_MENU_MAX });
 					}
 				} else if (priority === sortField.priority) {
 					if (field === sortField.field) {
 						return _extends({}, sortField, { value: value, priority: priority });
 					} else {
-						return _extends({}, sortField, { value: null, priority: 100 });
+						return _extends({}, sortField, { value: null, priority: _index.SORT_MENU_MAX });
 					}
 				}
 				return _extends({}, sortField);
@@ -43688,7 +43688,7 @@ var SolrClient = function () {
 
 			var selected = newSortFields.length;
 			for (var i = 0; i < newSortFields.length; i++) {
-				if (newSortFields[i].priority === 100) {
+				if (newSortFields[i].priority === _index.SORT_MENU_MAX) {
 					selected = i;
 					break;
 				} else {
@@ -43696,19 +43696,11 @@ var SolrClient = function () {
 				}
 			}
 
-			console.log(selected);
-			console.log(newSortFields.length);
 			if (selected == newSortFields.length) {
-				console.log("IN LOOP");
 				for (var i = 0; i < newSortFields.length; i++) {
 					newSortFields[i].priority--;
 				}
 			}
-
-			//so we have sort fields
-			//actual selected
-			console.log("ACTUAL SELECTED");
-			console.log(newSortFields);
 
 			var payload = { type: "SET_SORT_FIELDS", newSortFields: newSortFields };
 			this.sendQuery((0, _query2.default)(this.state.query, payload));
@@ -43754,7 +43746,7 @@ var SolrClient = function () {
 
 exports.SolrClient = SolrClient;
 
-},{"../reducers/query":43,"../reducers/results":44,"./server":17}],19:[function(_dereq_,module,exports){
+},{"../components/sort-menu/index":40,"../reducers/query":43,"../reducers/results":44,"./server":17}],19:[function(_dereq_,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43892,7 +43884,6 @@ var solrQuery = function solrQuery(query) {
 	    idField = query.idField;
 
 
-	console.log(query);
 	var filters = (query.filters || []).map(function (filter) {
 		return _extends({}, filter, { type: filter.type || "text" });
 	});
@@ -43911,9 +43902,6 @@ var solrQuery = function solrQuery(query) {
 	tempSortFields.reverse();
 
 	var sortParam = buildSort(tempSortFields.concat(idSort));
-
-	console.log("SORT PARAMS");
-	console.log(sortParam);
 
 	var defaultSortParam = encodeURIComponent("sent_on_dt desc");
 
@@ -44735,6 +44723,7 @@ var ListFacet = function (_React$Component) {
 		value: function render() {
 			var _this2 = this;
 
+			console.log(this);
 			var _props = this.props,
 			    query = _props.query,
 			    label = _props.label,
@@ -44864,7 +44853,8 @@ var ListFacet = function (_React$Component) {
 }(_react2.default.Component);
 
 ListFacet.defaultProps = {
-	value: []
+	value: [],
+	collapse: true
 };
 
 ListFacet.propTypes = {
@@ -46059,6 +46049,8 @@ var _search = _dereq_("./icons/search");
 
 var _search2 = _interopRequireDefault(_search);
 
+var _index = _dereq_("./sort-menu/index");
+
 var _componentPack = _dereq_("./component-pack");
 
 var _componentPack2 = _interopRequireDefault(_componentPack);
@@ -46084,9 +46076,7 @@ var SolrFacetedSearch = function (_React$Component) {
 		var _this = _possibleConstructorReturn(this, (SolrFacetedSearch.__proto__ || Object.getPrototypeOf(SolrFacetedSearch)).call(this, props));
 
 		_this.state = {
-			sortBaseComponents: [0],
-			max_selected: 0,
-			last_num_selected: 0
+			sortBaseComponents: [0]
 		};
 
 		_this.checkOnChange = _this.checkOnChange.bind(_this);
@@ -46097,30 +46087,25 @@ var SolrFacetedSearch = function (_React$Component) {
 		key: "checkOnChange",
 		value: function checkOnChange(field, value, priority) {
 			var newFields = this.props.onSortFieldChange(field, value, priority);
-			//assumes if priority is < 100 and
-			console.log("SORT FIELD");
 			var selected = 0;
 			for (var i = 0; i < newFields.length; i++) {
-				if (newFields[i].priority < 100) {
+				if (newFields[i].priority < _index.SORT_MENU_MAX) {
 					selected++;
 				}
 			}
-			console.log("SELECTED");
-			console.log(selected);
 
 			this.addSortComponent(field, selected, newFields);
 		}
 	}, {
 		key: "addSortComponent",
 		value: function addSortComponent(field, selected, newFields) {
-			if (this.state.sortBaseComponents.length < selected + 1 && this.state.sortBaseComponents.length < this.props.query.sortFields.length) //&& this.state.sortBaseComponents.length == this.state.max_selected)
-				{
-					var newArray = this.state.sortBaseComponents;
-					newArray.push(this.state.sortBaseComponents[this.state.sortBaseComponents.length - 1] + 1);
-					this.setState({
-						sortBaseComponents: newArray
-					});
-				} else if (this.state.sortBaseComponents.length > selected + 1) {
+			if (this.state.sortBaseComponents.length < selected + 1 && this.state.sortBaseComponents.length < this.props.query.sortFields.length) {
+				var newArray = this.state.sortBaseComponents;
+				newArray.push(this.state.sortBaseComponents[this.state.sortBaseComponents.length - 1] + 1);
+				this.setState({
+					sortBaseComponents: newArray
+				});
+			} else if (this.state.sortBaseComponents.length > selected + 1) {
 				var newArray = this.state.sortBaseComponents;
 				newArray.pop();
 				this.setState({ sortBaseComponents: newArray });
@@ -46172,10 +46157,8 @@ var SolrFacetedSearch = function (_React$Component) {
 			var pagination = query.pageStrategy === "paginate" ? _react2.default.createElement(PaginateComponent, _extends({}, this.props, { bootstrapCss: bootstrapCss, onChange: onPageChange })) : null;
 
 			var preloadListItem = query.pageStrategy === "cursor" && results.docs.length < results.numFound ? _react2.default.createElement(PreloadComponent, this.props) : null;
-			var me = this;
 
-			console.log("RENDERING..." + me.state.max_selected);
-			console.log(this.state.sortBaseComponents);
+			var me = this;
 			var reversedBase = this.state.sortBaseComponents.slice();
 
 			return _react2.default.createElement(
@@ -46272,12 +46255,13 @@ SolrFacetedSearch.propTypes = {
 
 exports.default = SolrFacetedSearch;
 
-},{"./component-pack":20,"./icons/search":24,"classnames":1,"react":"react"}],40:[function(_dereq_,module,exports){
+},{"./component-pack":20,"./icons/search":24,"./sort-menu/index":40,"classnames":1,"react":"react"}],40:[function(_dereq_,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.SORT_MENU_MAX = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -46300,6 +46284,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SORT_MENU_MAX = exports.SORT_MENU_MAX = 10;
 
 var SortMenu = function (_React$Component) {
 	_inherits(SortMenu, _React$Component);
@@ -46350,13 +46336,13 @@ var SortMenu = function (_React$Component) {
 			if (foundIdx >= 0) {
 				this.props.onChange(sortField, "asc", this.props.keyIndex);
 			} else {
-				this.props.onChange(sortField, null, 100);
+				this.props.onChange(sortField, null, SORT_MENU_MAX);
 			}
 		}
 	}, {
 		key: "onDelete",
 		value: function onDelete(sortField) {
-			this.props.onChange(sortField, null, 100);
+			this.props.onChange(sortField, null, SORT_MENU_MAX);
 		}
 	}, {
 		key: "handleDocumentClick",
@@ -46382,7 +46368,6 @@ var SortMenu = function (_React$Component) {
 				return null;
 			}
 
-			//get current location
 			var foundIdx = -1;
 			for (var i = 0; i < sortFields.length; i++) {
 				if (sortFields[i].priority === this.props.keyIndex) {

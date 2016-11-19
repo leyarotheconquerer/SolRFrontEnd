@@ -5,7 +5,6 @@ import {
     SolrFacetedSearch,
     SolrClient
 } from "solr-faceted-search-react";
-
 import Modal from './node_modules/react-bootstrap/lib/Modal';
 import ModalHeader from './node_modules/react-bootstrap/lib/ModalHeader';
 import ModalFooter from './node_modules/react-bootstrap/lib/ModalFooter';
@@ -16,6 +15,7 @@ import Tooltip from './node_modules/react-bootstrap/lib/Tooltip';
 import OverlayTrigger from './node_modules/react-bootstrap/lib/OverlayTrigger';
 import $ from 'jquery';
 import renderIf from 'render-if';
+
 
 const ROOT_URL = "https://cs-lab.letu.edu:50005/solr/mail_core/select";
 const ROOT_ATTACHMENT_URL = " http://cs-lab.letu.edu/~hazenjohnson/solr/";
@@ -33,9 +33,9 @@ const fields = [
 
 // The sortable fields you want
 var sortFields = [
-    {label: "Sender Email", field: "sender_email_address_s", priority: 100},
-    {label: "Path", field: "path_s", priority: 100},
-    {label: "Sent on", field: "sent_on_dt", priority: 100}
+    {label: "Sender Email", field: "sender_email_address_s"},
+    {label: "Path", field: "path_s"},
+    {label: "Sent on", field: "sent_on_dt"}
   ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -58,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     onSelectDoc={(function(doc) {
                         console.log(doc);
                         $.getJSON(ROOT_URL + '?indent=on&q=attachment_email_s:'+ doc.id + '&wt=json' , function (data) {
-                              //console.log(data.response.docs);
                               var attachments = data.response.docs;
                               const MessageModal = React.createClass({
                                 getInitialState() {
