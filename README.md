@@ -48,7 +48,7 @@ The correct address/port to use will be displayed in the terminal. If nothing sh
 IMPORTANT: MAKE SURE to use CTRL+F5 after every compile/change cycle when trying to load the page as the browser will cache the page from the last run (CTRL+F5 clears the page cache).
 
 ##Deployment
-After completing the above [setup](##Development Setup) steps, go into the index.js and change the value of the url constants to point to your SOLR REST API and your database attachments directory.
+After completing the above [setup](#Development Setup) steps, go into the index.js and change the value of the url constants to point to your SOLR REST API and your database attachments directory.
 
 To make sure these changes are reflected, run the refresh script (refresh.bat for Windows and refresh.sh for Linux) in the root directory to recompile changes to web.js in the root directory.  If the refresh script has errors, run the following command from the terminal or try to install the package that the error claims is missing or inaccessible:
 
