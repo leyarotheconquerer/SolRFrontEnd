@@ -23,7 +23,7 @@ npm install
 
 The solr-faceted-search-react package included in ./node_modules is a CUSTOM version. Do not update/remove/uninstall this package (there is a package by the same name in the npm registry) through npm. The repository for this can also be found [here](https://github.com/israelterrill/solr-faceted-search-custom). 
 
-If one makes any changes to this package, make sure to run the watch script (watch.sh or windowsWatch.bat) located in the root directory of the solr-faceted-search-react package in order to compile changes. If the watch script throws any errors (i.e. does not remain open), one should try to install the package that the command claims is missing (simplest approach) or, if that does not work, run the following commmand from a terminal:
+If one makes any changes to this package, make sure to run the watch script (watch.sh or windowsWatch.bat) located in the root directory of the solr-faceted-search-react package in order to compile changes. If the watch script throws any errors (i.e. does not remain open), one should try to install the package that the command claims is missing (simplest approach) or, if that does not work, run the following command from a terminal:
 
 ```
 npm install
@@ -31,7 +31,7 @@ npm install
 
 For much more helpful information on the solr-faceted-search package, see the original package information [SolR Faceted Search](https://github.com/HuygensING/solr-faceted-search-react).
 
-If one wants to see one's changes before deployment, one can run a simple webserver. Although any web server may be chosen, one can use [http-server](https://www.npmjs.com/package/http-server), which can be installed using the following command from a terminal (be sure to have root or admin permissions):
+If one wants to see one's changes before deployment, one can run a simple web server. Although any web server may be chosen, one can use [http-server](https://www.npmjs.com/package/http-server), which can be installed using the following command from a terminal (be sure to have root or admin permissions):
 
 ```
 npm install -g http-server
