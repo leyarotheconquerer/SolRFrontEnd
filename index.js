@@ -22,7 +22,7 @@ const ROOT_ATTACHMENT_URL = " http://cs-lab.letu.edu/~hazenjohnson/solr/";
 
 // The search fields and filterable facets you want
 const fields = [
-    {label: "General Search", 		field: "*", type: "text"},
+    {label: "General Search", 		field: "*", type: "text", collapse: false},
     {label: "Sender Email Address", 	field: "sender_email_address_s", type: "text"},
     {label: "Sender Name", 	field: "sender_name_s", type: "list-facet"},
     {label: "Subject", 			field: "subject_s", 	type: "text"},
