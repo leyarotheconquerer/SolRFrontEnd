@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css">-->
+    <link rel="stylesheet" id="pagestyle" title="light" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
+    <!--<link rel="stylesheet" title="dark" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css">-->
 
     <style type="text/css">
         .form-control {
@@ -341,9 +341,52 @@
           font-size: 1.2em;
           margin-top: 37px;
         }
+
+        /* Banner */
+        .banner {
+            background-color:#222222;
+            background-image: url('sun_flipped.png');
+            background-size: 375px;
+            background-repeat: no-repeat;
+            width: 100%;
+            height: 80px;
+            vertical-align: middle;
+        }
+        .banner-text {
+            color: #337ab7;
+            font-size: 32px;
+            padding-top: 18px;
+            padding-left: 200px;
+            display:inline-block;
+        }
+        .banner-button {
+            float: right;
+            margin-top: 30px;
+            margin-right: 30px;
+        }
     </style>
+<script>
+//https://www.developphp.com/video/JavaScript/Change-Style-Sheet-Using-Tutorial-CSS-Swap-Stylesheet
+var curr_sheet = "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css";
+function swapStyleSheet(){
+    if (curr_sheet === "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css")
+    {
+    	document.getElementById('pagestyle').setAttribute('href', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css");
+        curr_sheet ="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css";
+    }
+    else {
+    	document.getElementById('pagestyle').setAttribute('href', "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css");
+        curr_sheet = "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css";
+    }
+}
+</script>
+
 </head>
 <body>
+    <div class="banner">
+        <p class="banner-text">SOLR Search</p>
+        <button class="banner-button" onclick="swapStyleSheet()">Switch Theme</button>
+    </div>
     <div id="node"></div>
     <div id="app">
     </div>
