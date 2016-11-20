@@ -60,3 +60,5 @@ From the root directory of the repository, copy the web.js and index.html files 
 
 If you have problems with the page not showing up, check the developer tools of your browser (CTRL+SHIFT+J for Chrome), and, if the console has an error involving CORS access, install a [plugin](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en) from the Chrome web store for temporary development or [change the server settings to allow CORS](http://marianoguerra.org/posts/enable-cors-in-apache-solr.html). If the page still does not show up, try navigating to the url of the SOLR database to be sure that the web browser is not blocking the page for security reasons (i.e. unsafe certificates).
 
+##Known Issues
+Clicking New Search in the UI does not reset the number of sort field parameters fields available.
