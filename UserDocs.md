@@ -1,3 +1,9 @@
+#User Documentation
+NOTE: Clicking the "New Search" button will reset all search and sort fields to their default values.
+
+
+![New Search](user_doc_images/new_search.png "New Search")
+
 ##Search Fields
 ####General Search
 ![General Search](user_doc_images/general_search.png "General Search")
