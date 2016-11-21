@@ -9,14 +9,14 @@ NOTE: Clicking the "New Search" button will reset all search and sort fields to 
 ![General Search](user_doc_images/general_search.png "General Search")
 
 
-This field searches any part of the message for the contents of the search box. One does not need to use SOLR syntax in this input.
+This field searches any part of the message for the contents of the search box. One does not need to use Solr syntax in this input.
 
 
 ####Sender Email Search
 ![Sender Email Search](user_doc_images/sender_email.png "Sender Email Search")
 
 
-This field uses SOLR syntax (i.e. "corey@let*") for searches on the "sender_email_address_s" field.
+This field uses Solr syntax (i.e. "corey@let*") for searches on the "sender_email_address_s" field.
 
 
 ####Sender Name Facet List
@@ -29,13 +29,13 @@ This facet field displays the facets for the sender email name (sender_name_s). 
 ![Subject Search](user_doc_images/subject_search.png "Subject Search")
 
 
-This facet field uses SOLR syntax (i.e. "corey@let*") for searches on the "subject_s" field.
+This facet field uses Solr syntax (i.e. "corey@let*") for searches on the "subject_s" field.
 
 
 ####Path Search
 ![Path Search](user_doc_images/path_search.png "Path Search")
 
-This field uses SOLR syntax (i.e. "corey@let*") for searches on the "path_s" field. All SOLR characters that need to be escaped are escaped except for (CHECK IF _ is) *, ?, and ~ as these are used for searching.
+This field uses Solr syntax (i.e. "corey@let*") for searches on the "path_s" field. All Solr characters that need to be escaped are escaped except for (CHECK IF _ is) *, ?, and ~ as these are used for searching.
 
 ####Date Range Search
 ![Date Range Search](user_doc_images/date_range_search.png "Date Range Search")
