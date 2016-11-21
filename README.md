@@ -1,5 +1,5 @@
-# SolRFrontEnd
-Front end web app for accessing a SolR database containing email documents
+# Solr Email Front-End
+A front-end web application in ReactJS for accessing a Solr database containing email documents.
 
 ##Development Setup
 
@@ -33,7 +33,7 @@ npm install
 
 Additionally, remember to run the refresh script (refresh.bat for Windows or refresh.sh for Linux) in the main directory.
 
-For much more helpful information on the solr-faceted-search package, see the original package information [SolR Faceted Search](https://github.com/HuygensING/solr-faceted-search-react).
+For much more helpful information on the solr-faceted-search package, see the original package information [Solr Faceted Search](https://github.com/HuygensING/solr-faceted-search-react).
 
 If one wants to see one's changes before deployment, one can run a simple web server. Although any web server may be chosen, one can use [http-server](https://www.npmjs.com/package/http-server), which can be installed using the following command from a terminal (be sure to have root or admin permissions):
 
@@ -52,7 +52,7 @@ The correct address/port to use will be displayed in the terminal. If nothing sh
 IMPORTANT: MAKE SURE to use CTRL+F5 after every compile/change cycle when trying to load the page as the browser will cache the page from the last run (CTRL+F5 clears the page cache).
 
 ##Deployment
-After completing the above [setup](#development-setup) steps, go into the index.js and change the value of the url constants (ROOT_URL and ROOT_ATTACHMENT_URL) to point to your SOLR REST API and your database attachments directory.
+After completing the above [setup](#development-setup) steps, go into the index.js and change the value of the url constants (ROOT_URL and ROOT_ATTACHMENT_URL) to point to your Solr REST API and your database attachments directory.
 
 To make sure these changes are reflected, run the refresh script (refresh.bat for Windows and refresh.sh for Linux) in the root directory to recompile changes to web.js in the root directory.  If the refresh script has errors, run the following command from the terminal or try to install the package that the error claims is missing or inaccessible:
 
@@ -62,7 +62,7 @@ npm install
 
 From the root directory of the repository, copy the web.js and index.html files to the server of your choice. These are the only files required for deployment.
 
-If you have problems with the page not showing up, check the developer tools of your browser (CTRL+SHIFT+J for Chrome), and, if the console has an error involving CORS access, install a [plugin](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en) from the Chrome web store for temporary development or [change the server settings to allow CORS](http://marianoguerra.org/posts/enable-cors-in-apache-solr.html). If the page still does not show up, try navigating to the url of the SOLR database to be sure that the web browser is not blocking the page for security reasons (i.e. unsafe certificates).
+If you have problems with the page not showing up, check the developer tools of your browser (CTRL+SHIFT+J for Chrome), and, if the console has an error involving CORS access, install a [plugin](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en) from the Chrome web store for temporary development or [change the server settings to allow CORS](http://marianoguerra.org/posts/enable-cors-in-apache-solr.html). If the page still does not show up, try navigating to the url of the Solr database to be sure that the web browser is not blocking the page for security reasons (i.e. unsafe certificates).
 
 ##User Documentation
 For more information on how to use this interface, please view the [user documentation] (UserDocs.md) for the fields.
