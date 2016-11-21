@@ -3,7 +3,7 @@
 ![General Search](user_doc_images/general_search.png "General Search")
 
 
-This field searches any part of the message for the contents of the search box. One does not need to use SOLR syntax in this box to search.
+This field searches any part of the message for the contents of the search box. One does not need to use SOLR syntax in this input.
 
 
 ####Sender Email Search
