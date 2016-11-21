@@ -41,7 +41,7 @@ This input control allows one to search between (and including the first date) t
 
 These sort parameters allow the user to sort on a few different field options. One can sort on multiple fields as when one option is selected, another box is automatically added to allow a another sort parameter. The order of the fields matters with regard to priority (left to right in priority).
 
-##Results Section
+##Results Display
 ####Result Field
 ![Result Field](user_doc_images/results_section.png "Result Field")
 
