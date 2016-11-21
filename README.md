@@ -21,6 +21,8 @@ If one makes changes to the index.js file in the root of this directory, make su
 npm install
 ```
 
+IMPORTANT: IF ONE MAKES ANY CHANGES TO ANY .js FILES IN THE MAIN PROJECT OR ANYWHERE IN THE DEPENDENCIES, RE-RUN THE REFRESH SCRIPT!
+
 The solr-faceted-search-react package included in ./node_modules is a CUSTOM version. Do not update/remove/uninstall this package (there is a package by the same name in the npm registry) through npm. The repository for this can also be found [here](https://github.com/israelterrill/solr-faceted-search-custom). 
 
 If one makes any changes to this package, make sure to run the watch script (watch.sh or windowsWatch.bat) located in the root directory of the solr-faceted-search-react package in order to compile changes. If the watch script throws any errors (i.e. does not remain open), one should try to install the package that the command claims is missing (simplest approach) or, if that does not work, run the following command from a terminal:
@@ -28,6 +30,8 @@ If one makes any changes to this package, make sure to run the watch script (wat
 ```
 npm install
 ```
+
+Additionally, remember to run the refresh script (refresh.bat for Windows or refresh.sh for Linux) in the main directory.
 
 For much more helpful information on the solr-faceted-search package, see the original package information [SolR Faceted Search](https://github.com/HuygensING/solr-faceted-search-react).
 
@@ -48,7 +52,7 @@ The correct address/port to use will be displayed in the terminal. If nothing sh
 IMPORTANT: MAKE SURE to use CTRL+F5 after every compile/change cycle when trying to load the page as the browser will cache the page from the last run (CTRL+F5 clears the page cache).
 
 ##Deployment
-After completing the above [setup](#development-setup) steps, go into the index.js and change the value of the url constants to point to your SOLR REST API and your database attachments directory.
+After completing the above [setup](#development-setup) steps, go into the index.js and change the value of the url constants (ROOT_URL and ROOT_ATTACHMENT_URL) to point to your SOLR REST API and your database attachments directory.
 
 To make sure these changes are reflected, run the refresh script (refresh.bat for Windows and refresh.sh for Linux) in the root directory to recompile changes to web.js in the root directory.  If the refresh script has errors, run the following command from the terminal or try to install the package that the error claims is missing or inaccessible:
 
