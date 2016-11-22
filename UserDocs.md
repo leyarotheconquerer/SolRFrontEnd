@@ -29,13 +29,13 @@ This facet field displays the facets for the sender email name (sender_name_s). 
 ![Subject Search](user_doc_images/subject_search.png "Subject Search")
 
 
-This facet field uses Solr syntax (i.e. "corey@let*") for searches on the "subject_s" field.
+This facet field uses Solr syntax (i.e. "MySubj*") for searches on the "subject_s" field.
 
 
 ####Path Search
 ![Path Search](user_doc_images/path_search.png "Path Search")
 
-This field uses Solr syntax (i.e. "corey@let*") for searches on the "path_s" field. All Solr characters that need to be escaped are escaped except for (CHECK IF _ is) *, ?, and ~ as these are used for searching.
+This field uses Solr syntax (i.e. "\\Public Stuff\Pla*") for searches on the "path_s" field. All Solr characters that need to be escaped are escaped except for *, ?, and ~ as these are used for some searches.
 
 ####Date Range Search
 ![Date Range Search](user_doc_images/date_range_search.png "Date Range Search")
