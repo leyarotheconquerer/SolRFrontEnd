@@ -6,11 +6,13 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
     <!-- Latest compiled and minified CSS -->
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" id="pagestyle" title="light" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
-    <!--<link rel="stylesheet" title="dark" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css">-->
+    <link rel="stylesheet" title="light" id="pagestyle" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
+
+	<!--<link rel="stylesheet" key="2" title="dark" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css">-->
 
     <style type="text/css">
         .form-control {
@@ -363,29 +365,63 @@
             float: right;
             margin-top: 30px;
             margin-right: 30px;
+            background-color: Transparent;
+            background-repeat:no-repeat;
+            border: none;
+            cursor:pointer;
+            overflow: hidden;
+            outline:none;
+            color: #CCCCCC;
         }
     </style>
 <script>
+
 //https://www.developphp.com/video/JavaScript/Change-Style-Sheet-Using-Tutorial-CSS-Swap-Stylesheet
 var curr_sheet = "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css";
+restoreStyleSheet();
 function swapStyleSheet(){
     if (curr_sheet === "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css")
     {
     	document.getElementById('pagestyle').setAttribute('href', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css");
         curr_sheet ="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css";
+		storeStyleSheet("dark");
+		console.log(localStorage.getItem("style"));
     }
-    else {
+    else
+	{
     	document.getElementById('pagestyle').setAttribute('href', "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css");
         curr_sheet = "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css";
+		storeStyleSheet("light");
+		console.log(localStorage.getItem("style"));
     }
+}
+
+function storeStyleSheet(StyleSheetName){
+   localStorage.setItem("style",  StyleSheetName);
+}
+
+function restoreStyleSheet()
+{
+    var styleSheet = localStorage.getItem("style");
+	if (styleSheet === "dark")
+	{
+		curr_sheet = "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css";
+		document.getElementById('pagestyle').setAttribute('href',"https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css" );
+	}
+	else
+	{
+		curr_sheet = "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css";
+    	document.getElementById('pagestyle').setAttribute('href', "https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css");
+	}
 }
 </script>
 
 </head>
+
 <body>
-    <div class="banner" onclick="swapStyleSheet()">
-        <p class="banner-text">SOLR Search</p>
-		<!--<button class="banner-button" onclick="swapStyleSheet()">Switch Theme</button>-->
+    <div class="banner">
+		<p class="banner-text">SOLR Search</p>
+		<button class="banner-button" onclick="swapStyleSheet()">Switch Theme</button>
     </div>
     <div id="node"></div>
     <div id="app">
