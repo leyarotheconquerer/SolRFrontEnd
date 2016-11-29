@@ -17,8 +17,8 @@ import $ from 'jquery';
 import renderIf from 'render-if';
 
 
-const ROOT_URL = "https://cs-lab.letu.edu:50005/solr/mail_core/select";
-const ROOT_ATTACHMENT_URL = " http://cs-lab.letu.edu/~hazenjohnson/solr/";
+const ROOT_URL = "http://10.52.90.104:80/solr/mail_core/select";
+const ROOT_ATTACHMENT_URL = " http://10.52.90.104/attachments/";
 
 // The search fields and filterable facets you want
 const fields = [
@@ -106,7 +106,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                         </Modal.Header>
                                         <Modal.Body>
-                                          {doc.body_t}
+                                          <pre>
+                                            {doc.body_t}
+                                          </pre>
                                         </Modal.Body>
 
                                       </Modal>

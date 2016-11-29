@@ -56,8 +56,8 @@ var _renderIf2 = _interopRequireDefault(_renderIf);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ROOT_URL = "https://cs-lab.letu.edu:50005/solr/mail_core/select";
-var ROOT_ATTACHMENT_URL = " http://cs-lab.letu.edu/~hazenjohnson/solr/";
+var ROOT_URL = "http://10.52.90.104:80/solr/mail_core/select";
+var ROOT_ATTACHMENT_URL = " http://10.52.90.104/attachments/";
 
 // The search fields and filterable facets you want
 var fields = [{ label: "General Search", field: "*", type: "text", collapse: false }, { label: "Sender Email Address", field: "sender_email_address_s", type: "text" }, { label: "Sender Name", field: "sender_name_s", type: "list-facet" }, { label: "Subject", field: "subject_s", type: "text" },
@@ -175,7 +175,11 @@ document.addEventListener("DOMContentLoaded", function () {
                       _react2.default.createElement(
                         _Modal2.default.Body,
                         null,
-                        doc.body_t
+                        _react2.default.createElement(
+                          "pre",
+                          null,
+                          doc.body_t
+                        )
                       )
                     )
                   );
